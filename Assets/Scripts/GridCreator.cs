@@ -22,10 +22,10 @@ public class GridCreator : MonoBehaviour
     }
     public void CreateButtoGrid()
     {
-        InvokeRepeating("InitButton", 0f, 0.05f);
+        InvokeRepeating("InitElements", 0f, 0.05f);
     }
 
-    private void InitButton()
+    private void InitElements()
     {
         //Once we reach max amount of elements needed we stop instantitating
         if (_holder.transform.childCount == maxGridElements)
@@ -52,5 +52,10 @@ public class GridCreator : MonoBehaviour
             GridManager.instance.elementsList.Add(obj.GetComponent<GridIndex>());
             currentCol++;
         }
+    }
+
+    public void ResetGridCurrentData()
+    {
+        currentRow = currentCol = 0;
     }
 }

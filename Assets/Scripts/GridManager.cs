@@ -9,18 +9,26 @@ public class GridManager : MonoBehaviour
     private GridManager gridManager;
 
     public GameObject holder;
+    public GameObject text;
 
     [HideInInspector]
     public List<GridIndex> elementsList = new List<GridIndex>();
     public PatternDetector patternDetector;
+    public GridCreator gridCreator;
 
     public int minElements = 0;
     public int maxElements = 5;
 
+    public Dropdown patternTypesDropDown;
+
     private Color clickedColor = Color.red;
 
-    private int minPatternCheck = 3;
+    private int minPatternCheck;
     private int totalActiveElements = 0;
+
+    private bool checkForPattern = false;
+
+    private PATTERN_TYPE currentPattern;
 
     private void Awake()
     {
@@ -31,6 +39,24 @@ public class GridManager : MonoBehaviour
 
         else
             Destroy(instance);
+    }
+
+    private void Start()
+    {
+        PopulatePatternDropDown();
+        patternTypesDropDown.onValueChanged.AddListener(delegate { OnPatternTypeSelected(patternTypesDropDown); });
+    }
+
+    private void Update()
+    {
+        //We start pattern serach algorithm only if minimum required no of dots have been activated or pressed
+        if (totalActiveElements > minPatternCheck && checkForPattern)
+        {
+            checkForPattern = false;
+
+            if (patternDetector != null)
+                patternDetector.CheckForPattern(currentPattern);
+        }
     }
 
     /// <summary>
@@ -65,14 +91,93 @@ public class GridManager : MonoBehaviour
             if (patternDetector != null)
                 patternDetector.activeElements.Add(button.transform.GetComponent<GridIndex>());
 
+            checkForPattern = true;
             totalActiveElements++;
         }
+    }
 
-        if (totalActiveElements > minPatternCheck)
+    /// <summary>
+    /// Resetting the entire grid be deleting existing grind and creating a new one (Testing purpouse only)
+    /// </summary>
+    public void Reset_ActiveGrid()
+    {
+        for (int i = 0; i < holder.transform.childCount; i++)
         {
-            if (patternDetector != null)
-                patternDetector.CheckForPattern();
+            Destroy(holder.transform.GetChild(i).gameObject);
         }
 
+        elementsList.Clear();
+        totalActiveElements = 0;
+        checkForPattern = false;
+        text.SetActive(false);
+        gridCreator.ResetGridCurrentData();
+        patternDetector.ResetActiveElementsList();
+        Utils.ClearLogConsole();
+
+        gridCreator.CreateButtoGrid();
+    }
+
+    /// <summary>
+    /// Populating the all the available Patterns in the dropdown
+    /// </summary>
+    public void PopulatePatternDropDown()
+    {
+        string[] enumNames = System.Enum.GetNames(typeof(PATTERN_TYPE));
+        List<string> names = new List<string>(enumNames);
+
+        patternTypesDropDown.AddOptions(names);
+    }
+
+    /// <summary>
+    /// Callback to handle when any one of the pattern is selected
+    /// </summary>
+    /// <param name="dropdown"></param>
+    public void OnPatternTypeSelected(Dropdown dropdown)
+    {
+        currentPattern = (PATTERN_TYPE)dropdown.value;
+
+
+        switch(currentPattern)
+        {
+            case PATTERN_TYPE.A:
+                minPatternCheck = 5;
+                break;
+            case PATTERN_TYPE.C:
+                minPatternCheck = 6;
+                break;
+            case PATTERN_TYPE.E:
+                minPatternCheck = 10;
+                break;
+            case PATTERN_TYPE.FOUR_DOTS:
+                minPatternCheck = 3;
+                break;
+            case PATTERN_TYPE.H:
+                minPatternCheck = 6;
+                break;
+            case PATTERN_TYPE.I_SEVEN_DOTS:
+                minPatternCheck = 6;
+                break;
+            case PATTERN_TYPE.L_FIVE_DOTS:
+                minPatternCheck = 4;
+                break;
+            case PATTERN_TYPE.L_FOUR_DOTS:
+                minPatternCheck = 3;
+                break;
+            case PATTERN_TYPE.PLUS_FIVE_DOTS:
+                minPatternCheck = 4;
+                break;
+            case PATTERN_TYPE.SQUARE_FOUR_DOTS:
+                minPatternCheck = 3;
+                break;
+            case PATTERN_TYPE.THREE_DOTS:
+                minPatternCheck = 2;
+                break;
+            case PATTERN_TYPE.T_FIVE_DOTS:
+                minPatternCheck = 4;
+                break;
+            case PATTERN_TYPE.T_FOUR_DOTS:
+                minPatternCheck = 3;
+                break;
+        }
     }
 }
