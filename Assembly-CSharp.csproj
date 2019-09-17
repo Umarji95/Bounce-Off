@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\AllEnums.cs" />
+    <Compile Include="Assets\Scripts\BasePatternController.cs" />
     <Compile Include="Assets\Scripts\GridCreator.cs" />
     <Compile Include="Assets\Scripts\GridIndex.cs" />
     <Compile Include="Assets\Scripts\GridManager.cs" />
