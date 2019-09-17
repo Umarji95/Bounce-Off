@@ -7,6 +7,7 @@ public class PatternDetector : MonoBehaviour
 {
     public List<GridIndex> activeElements = new List<GridIndex>();
 
+    private List<GridIndex> resultGridIndices = new List<GridIndex>();
 
     public void CheckForPattern(PATTERN_TYPE currentPattern)
     {
@@ -14,108 +15,42 @@ public class PatternDetector : MonoBehaviour
         {
             case PATTERN_TYPE.SQUARE_FOUR_DOTS:
 
-                SquarePattern squarePattern = new SquarePattern();
+                //Clearing any presvious result data
+                if (resultGridIndices.Count > 0)
+                    resultGridIndices.Clear();
 
-                squarePattern.SquarePatternAlgorithm(activeElements);
+                SquarePattern squarePattern = new SquarePattern();
+                resultGridIndices = squarePattern.SquarePatternAlgorithm(activeElements);  //Getting the final indices where the pattern has formed
+                DebugGridResultMessage(resultGridIndices, "Sqaure is formed at : ");
 
                 break;
 
-            /*case PATTERN_TYPE.T_FIVE_DOTS:
+            case PATTERN_TYPE.T_FIVE_DOTS:
 
-                for (int i = 0; i < activeElements.Count; i++)
-                {
-                    int currentRow = activeElements[i].X;
-                    int currentCol = activeElements[i].Y;
+                //Clearing any presvious result data
+                if (resultGridIndices.Count > 0)
+                    resultGridIndices.Clear();
 
-                    GridIndex topElement = null, bottomElement = null, leftElement = null, rightElement = null;
+                T_FIVE_Pattern t_FIVE = new T_FIVE_Pattern();
+                resultGridIndices = t_FIVE.T_FivePatternAlgorithm(activeElements);
+                DebugGridResultMessage(resultGridIndices, "T with 5 points is formed at :");
 
-                    #region Getting Top , Bottom , Left and Right Elements
-                    if ((currentRow - 1) >= GridManager.instance.minElements)
-                        topElement = GridManager.instance.elementsList.Find(obj => obj.X == currentRow - 1 && obj.Y == currentCol);
-
-                    if ((currentRow + 1) < GridManager.instance.maxElements)
-                        bottomElement = GridManager.instance.elementsList.Find(obj => obj.X == currentRow + 1 && obj.Y == currentCol);
-
-                    if ((currentCol - 1) >= GridManager.instance.minElements)
-                        leftElement = GridManager.instance.elementsList.Find(obj => obj.X == currentRow && obj.Y == currentCol - 1);
-
-                    if ((currentCol + 1) < GridManager.instance.maxElements)
-                        rightElement = GridManager.instance.elementsList.Find(obj => obj.X == currentRow && obj.Y == currentCol + 1);
-                    #endregion
-
-                    #region Checking if elements are active
-                    if (topElement != null && !topElement.isClicked)
-                        topElement = null;
-
-                    if (bottomElement != null && !bottomElement.isClicked)
-                        bottomElement = null;
-
-                    if (leftElement != null && !leftElement.isClicked)
-                        leftElement = null;
-
-                    if (rightElement != null && !rightElement.isClicked)
-                        rightElement = null;
-                    #endregion
-
-                    if(leftElement != null && rightElement != null && bottomElement != null)
-                    {
-                        GridIndex lowerBottom = GridManager.instance.elementsList.Find(obj => obj.X == currentRow + 2 && obj.Y == currentCol); //i.e bottom of the bottom element
-
-                        if (lowerBottom.isClicked)
-                        {
-                            Debug.Log("T Five dots Formed at : " + currentRow + ":" + currentCol + "--" + leftElement.X + ":" + leftElement.Y + "--" +
-                                            "--" + rightElement.X + ":" + rightElement.Y +"--"+ bottomElement.X + ":" + bottomElement.Y + "--" + lowerBottom.X + ":" + lowerBottom.Y);
-                            GridManager.instance.text.SetActive(true);
-                            break;
-                        }
-                    }
-
-                    else if(leftElement != null && rightElement != null && topElement != null)
-                    {
-                        GridIndex upperTop = GridManager.instance.elementsList.Find(obj => obj.X == currentRow - 2 && obj.Y == currentCol); //i.e top of the top element
-
-                        if (upperTop.isClicked)
-                        {
-                            Debug.Log("T Five dots Formed at : " + currentRow + ":" + currentCol + "--" + leftElement.X + ":" + leftElement.Y + "--" +
-                                            "--" + rightElement.X + ":" + rightElement.Y + "--" + topElement.X + ":" + topElement.Y + "--" + upperTop.X + ":" + upperTop.Y);
-                            GridManager.instance.text.SetActive(true);
-                            break;
-                        }
-                    }
-
-                    else if (topElement != null && bottomElement != null && leftElement != null)
-                    {
-                        GridIndex besideLeft = GridManager.instance.elementsList.Find(obj => obj.X == currentRow && obj.Y == currentCol - 2); //i.e left side of the left element
-
-                        if (besideLeft.isClicked)
-                        {
-                            Debug.Log("T Five dots Formed at : " + currentRow + ":" + currentCol + "--" + topElement.X + ":" + topElement.Y + "--" +
-                                            "--" + bottomElement.X + ":" + bottomElement.Y + "--" + leftElement.X + ":" + leftElement.Y + "--" + besideLeft.X + ":" + besideLeft.Y);
-                            GridManager.instance.text.SetActive(true);
-                            break;
-                        }
-                    }
-
-                    else if (topElement != null && bottomElement != null && rightElement != null)
-                    {
-                        GridIndex besideRight = GridManager.instance.elementsList.Find(obj => obj.X == currentRow && obj.Y == currentCol + 2); //i.e left side of the left element
-
-                        if (besideRight.isClicked)
-                        {
-                            Debug.Log("T Five dots Formed at : " + currentRow + ":" + currentCol + "--" + topElement.X + ":" + topElement.Y + "--" +
-                                            "--" + bottomElement.X + ":" + bottomElement.Y + "--" + rightElement.X + ":" + rightElement.Y + "--" + besideRight.X + ":" + besideRight.Y);
-                            GridManager.instance.text.SetActive(true);
-                            break;
-                        }
-                    }
-
-                }
-                break;*/
+                break;
         }
     }
 
     public void ResetActiveElementsList()
     {
         //activeElements.Clear();
+    }
+
+    public void DebugGridResultMessage(List<GridIndex> formationList , string message = "")
+    {
+        for(int i = 0; i < formationList.Count; i++)
+        {
+            message += "(" + formationList[i].X + "," + formationList[i].Y + ") ";  
+        }
+
+        Debug.Log(message);
     }
 }

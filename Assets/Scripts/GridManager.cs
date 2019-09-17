@@ -80,13 +80,13 @@ public class GridManager : MonoBehaviour
     public void OnElementClicked(Button button)
     {
         //Checking if the button is already clicked
-        bool isButtonClicked = button.transform.GetComponent<GridIndex>().isClicked;
+        bool isButtonClicked = button.transform.GetComponent<GridIndex>().isActive;
 
         if (!isButtonClicked)
         {
             button.transform.GetComponent<Image>().color = clickedColor;
             button.interactable = false;
-            button.transform.GetComponent<GridIndex>().isClicked = true;
+            button.transform.GetComponent<GridIndex>().isActive = true;
 
             if (patternDetector != null)
                 patternDetector.activeElements.Add(button.transform.GetComponent<GridIndex>());

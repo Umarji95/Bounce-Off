@@ -7,5 +7,5 @@ public class GridIndex : MonoBehaviour
     public int X;
     public int Y;
 
-    public bool isClicked;
+    public bool isActive;
 }
