@@ -138,9 +138,6 @@ public class T_FOUR_Pattern : BasePatternController
         //Clearing the previous stored indices before adding any new data
         resultPatternIndices.Clear();
 
-        //Resetting the value
-        resultPatternDirection = PatternDirection.NONE;
-
         for (int i = 0; i < activeElements.Count; i++)
         {
             int currentRow = activeElements[i].X;
@@ -198,7 +195,7 @@ public class T_FOUR_Pattern : BasePatternController
     }
 }
 
-public class T_FIVE_Pattern : T_FOUR_Pattern
+public class T_FIVE_Pattern : BasePatternController
 {
     /// <summary>
     /// Returns all the Indices where the "T SHAPE " with 5 points has formed
@@ -207,55 +204,83 @@ public class T_FIVE_Pattern : T_FOUR_Pattern
     /// <returns></returns>
     public List<GridIndex> T_FivePatternAlgorithm(List<GridIndex> activeElements)
     {
-        //Finding the Four Dots T shape
-        resultPatternIndices =  T_FourPatternAlgorithm(activeElements);
+        //Clearing the previous stored indices before adding any new data
+        resultPatternIndices.Clear();
 
-        int enteredListCount = resultPatternIndices.Count;
 
-        switch(resultPatternDirection)
+        for (int i = 0; i < activeElements.Count; i++)
         {
-            case PatternDirection.TOP:
+            int currentRow = activeElements[i].X;
+            int currentCol = activeElements[i].Y;
 
-                GridIndex upperTop = GridManager.instance.elementsList.Find(obj => obj.X == topElement.X - 1 && obj.Y == topElement.Y); //i.e top of the top element
+            //Getting all the neighbors of the current element
+            GetNeighbourElements(currentRow, currentCol);
 
-                if(upperTop != null && upperTop.isActive)
-                    resultPatternIndices.Add(upperTop);
-
-                break;
-
-            case PatternDirection.BOTTOM:
-
+            if (leftElement != null && rightElement != null && bottomElement != null)
+            {
                 GridIndex lowerBottom = GridManager.instance.elementsList.Find(obj => obj.X == bottomElement.X + 1 && obj.Y == bottomElement.Y); //i.e bottom of the bottom element
 
-                if(lowerBottom != null && lowerBottom.isActive)
+                if (lowerBottom != null && lowerBottom.isActive)
+                {
+                    resultPatternIndices.Add(leftElement);
+                    resultPatternIndices.Add(activeElements[i]);
+                    resultPatternIndices.Add(rightElement);
+                    resultPatternIndices.Add(bottomElement);
                     resultPatternIndices.Add(lowerBottom);
 
-                break;
+                    break;
+                }
+            }
 
-            case PatternDirection.LEFT:
+            else if (leftElement != null && rightElement != null && topElement != null)
+            {
+                GridIndex upperTop = GridManager.instance.elementsList.Find(obj => obj.X == topElement.X - 1 && obj.Y == topElement.Y); //i.e top of the top element
+
+                if (upperTop != null && upperTop.isActive)
+                {
+                    resultPatternIndices.Add(leftElement);
+                    resultPatternIndices.Add(activeElements[i]);
+                    resultPatternIndices.Add(rightElement);
+                    resultPatternIndices.Add(topElement);
+                    resultPatternIndices.Add(upperTop);
+
+                    break;
+                }
+            }
+
+            else if (topElement != null && bottomElement != null && leftElement != null)
+            {
 
                 GridIndex besideLeft = GridManager.instance.elementsList.Find(obj => obj.X == leftElement.X && obj.Y == leftElement.Y - 1); //i.e left side of the left element
 
-                if(besideLeft!= null && besideLeft.isActive)
+                if (besideLeft != null && besideLeft.isActive)
+                {
+                    resultPatternIndices.Add(topElement);
+                    resultPatternIndices.Add(activeElements[i]);
+                    resultPatternIndices.Add(bottomElement);
+                    resultPatternIndices.Add(leftElement);
                     resultPatternIndices.Add(besideLeft);
 
-                break;
+                    break;
+                }
+            }
 
-            case PatternDirection.RIGHT:
-
+            else if (topElement != null && bottomElement != null && rightElement != null)
+            {
                 GridIndex besideRight = GridManager.instance.elementsList.Find(obj => obj.X == rightElement.X && obj.Y == rightElement.Y + 1); //i.e left side of the left element
 
-                if(besideRight !=null && besideRight.isActive)
+                if (besideRight != null && besideRight.isActive)
+                {
+                    resultPatternIndices.Add(topElement);
+                    resultPatternIndices.Add(activeElements[i]);
+                    resultPatternIndices.Add(bottomElement);
+                    resultPatternIndices.Add(rightElement);
                     resultPatternIndices.Add(besideRight);
 
-                break;
-
+                    break;
+                }
+            }
         }
-
-        //Clearing the list if no new element was added in to the list in above calculation , indicating match was not found
-        if (resultPatternIndices.Count <= enteredListCount)
-             resultPatternIndices.Clear();
-
         return resultPatternIndices;
     }
 }
