@@ -232,7 +232,7 @@ public class T_FIVE_Pattern : BasePatternController
                 }
             }
 
-            else if (leftElement != null && rightElement != null && topElement != null)
+            if (leftElement != null && rightElement != null && topElement != null)
             {
                 GridIndex upperTop = GridManager.instance.elementsList.Find(obj => obj.X == topElement.X - 1 && obj.Y == topElement.Y); //i.e top of the top element
 
@@ -248,7 +248,7 @@ public class T_FIVE_Pattern : BasePatternController
                 }
             }
 
-            else if (topElement != null && bottomElement != null && leftElement != null)
+            if (topElement != null && bottomElement != null && leftElement != null)
             {
 
                 GridIndex besideLeft = GridManager.instance.elementsList.Find(obj => obj.X == leftElement.X && obj.Y == leftElement.Y - 1); //i.e left side of the left element
@@ -265,7 +265,7 @@ public class T_FIVE_Pattern : BasePatternController
                 }
             }
 
-            else if (topElement != null && bottomElement != null && rightElement != null)
+            if (topElement != null && bottomElement != null && rightElement != null)
             {
                 GridIndex besideRight = GridManager.instance.elementsList.Find(obj => obj.X == rightElement.X && obj.Y == rightElement.Y + 1); //i.e left side of the left element
 
